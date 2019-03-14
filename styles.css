@@ -1,0 +1,35 @@
+html {
+  background-color: #025ECC; 
+}
+
+/*body {
+  display: flex;
+}*/
+
+#board_one {
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 120px;
+}
+
+#board_two {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 120px;
+}
+
+table {
+  border: 1px solid black;
+  border-spacing: 0px;
+  position: absolute;
+  height: 24em;
+  width: 24em;
+}
+
+/*table {
+  border: 1px solid black;
+  border-spacing: 0px;
+  position: absolute;
+  height: 24em;
+  width: 24em;
+}*/
