@@ -1,15 +1,17 @@
-var table1 = document.createElement('table');
-var table2 = document.createElement('table');
+const table1 = document.createElement('table');
+const table2 = document.createElement('table');
 
-var createTable = function(table) {
+const createTable = function(table) {
 
-  for (var i = 0; i < 10; i++) {
+  for (let i = 0; i < 10; i++) {
 
-    var tableRow = document.createElement('tr');
+    const tableRow = document.createElement('tr');
+    tableRow.classList.add(`${i}`);
 
-    for (var j = 0; j < 10; j++) {
+    for (let j = 0; j < 10; j++) {
       
-      var tableData = document.createElement('td');
+      const tableData = document.createElement('td');
+      tableData.classList.add(`${j}`);
       tableRow.appendChild(tableData);
 
     }
@@ -22,8 +24,8 @@ var createTable = function(table) {
 createTable(table1);
 createTable(table2);
 
-var boardOne = document.getElementById('board_one');
-var boardTwo = document.getElementById('board_two');
+const boardOne = document.getElementById('board_one');
+const boardTwo = document.getElementById('board_two');
 
 boardOne.appendChild(table1);
 boardTwo.appendChild(table2);
