@@ -1,21 +1,45 @@
-html {
-  background-color: #025ECC; 
+/*html {
+  background: url('./images/ocean.jpg') no-repeat; 
+  background-size: cover;
+
+}*/
+
+body {
+  background: url('./images/ocean.jpg') no-repeat; 
+  background-size: cover;
 }
 
-/*body {
-  display: flex;
-}*/
+#container {
+  height: 600px;
+  border: 1px solid black;
+  background-color: rgba(226, 226, 226, 0.4);
+}
+
+h1 {
+  text-align: center;
+  font-size: 50px;
+  /*color: #4b8dff;*/
+  text-shadow: #f6f7fb 1px 0 10px;
+}
+
+td {
+  border: 1px solid black;
+}
 
 #board_one {
   display: flex;
+  /*justify-content: space-around;*/
   justify-content: flex-start;
   margin-left: 120px;
+  /*display: inline-flex;*/
 }
 
 #board_two {
   display: flex;
+  /*justify-content: space-around;*/
   justify-content: flex-end;
   margin-right: 120px;
+  /*display: inline-flex;*/
 }
 
 table {
