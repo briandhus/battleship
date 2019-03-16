@@ -20,22 +20,24 @@ td {
   border: 1px solid black;
 }
 
-#board_one {
+.boards {
   display: flex;
-  justify-content: flex-start;
-  margin-left: 120px;
+  flex-flow: row nowrap;
+  justify-content: space-between; 
+
+}
+
+#board_one {
+  margin-left: 30px;
 }
 
 #board_two {
-  display: flex;
-  justify-content: flex-end;
-  margin-right: 120px;
+  margin-right: 30px;
 }
 
 table {
   border: 1px solid black;
   border-spacing: 0px;
-  position: absolute;
   height: 24em;
   width: 24em;
 }
