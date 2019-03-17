@@ -5,7 +5,7 @@ const table2 = document.createElement('table');
 table2.classList.add('table2');
 
 
-const createTable = table => {
+const createTables = table => {
 
   for (let i = 0; i < 10; i++) {
 
@@ -17,18 +17,14 @@ const createTable = table => {
       const tableData = document.createElement('td');
       tableData.classList.add(`${i}${j}`);
       tableRow.appendChild(tableData);
-
+      tableData.innerHTML = 0;
     }
-
     table.appendChild(tableRow);
   }
-
 }
 
-createTable(table1);
-createTable(table2);
-
-const rowCount = table1.childNodes.length;
+createTables(table1);
+createTables(table2);
 
 const boardOne = document.getElementById('board_one');
 const boardTwo = document.getElementById('board_two');
@@ -36,48 +32,93 @@ const boardTwo = document.getElementById('board_two');
 boardOne.appendChild(table1);
 boardTwo.appendChild(table2);
 
+// Get row and column counts dynamically in case I add the ability to create board size later
+const rowCount = table1.childNodes.length;
+const colCount = document.querySelectorAll('td').length / (rowCount * 2);
+
 // Ships
 const ships = {
-  carrier: [0, 0, 0, 0, 0],
-  battleship: [0, 0, 0, 0],
-  cruiser: [0, 0, 0],
-  submarine: [0, 0, 0],
-  destroyer: [0, 0]
+  carrier: {
+    position: [0, 0, 0, 0, 0], hits: 5
+  },
+  battleship: {
+    position: [0, 0, 0, 0],
+    hits: 4
+  },
+  cruiser: {
+    position: [0, 0, 0],
+    hits: 3
+  },
+  submarine: {
+    position: [0, 0, 0],
+    hits: 3
+  },
+  destroyer: {
+    position: [0, 0],
+    hits: 2
+  }
 };
 
 // Random computer ship placing function
-const placeComputerShips = (ship, coordinates) => {
+const placeComputerShips = (ship, coordinates, hits) => {
 
   const randNum = max => Math.floor(Math.random() * max);
-  const direction = ['vertical', 'horizontal'];
-  let directionChoice = direction[randNum(direction.length)];
-  let row = randNum(rowCount);
 
-  if (directionChoice === 'vertical') {
-    console.log('V', ship, coordinates)
+  const upOrDown = ['vertical', 'horizontal'];
+  const leftOrRight = ['left', 'right'];
+
+  let counter = coordinates.length;
+
+  let upDownChoice = upOrDown[randNum(upOrDown.length)];
+  let leftRightChoice = leftOrRight[randNum(leftOrRight.length)];
+
+  let row = randNum(rowCount);
+  let column = randNum(colCount);
+
+  if (upDownChoice === 'vertical') {
+    // console.log('V', ship, coordinates, hits, row, column)
+    if (leftRightChoice === 'right' && column < 9) {
+
+    }
   } else {
-    console.log('H', ship)
+    // console.log('H', ship, coordinates, hits, row, column)
   }
   // flag squares for a ship's length
 }
 
 for (let el in ships) {
-  placeComputerShips(el, ships[el]);
+
+  let coordinates = [];
+  let missiles = 0;
+
+  for (let stats in ships[el]) {
+
+    if (stats === 'position') {
+      coordinates = ships[el][stats];
+    }
+    if (stats === 'hits') {
+      missiles = ships[el][stats];
+    }
+
+  }
+
+  placeComputerShips(el, coordinates, missiles);  
 }
 
 // Game instructions and options
 
 
-// Capture fired upon coordinates on click
-const fire = table => {
+// Capture coordinates on click
+const chooseSquare = table => {
 
   table.addEventListener("click", function( event ) {   
     // const coordinates = [event.target.className[0], event.target.className[1]];
     const coordinates = event.target.className;
+    console.log(coordinates)
     return Number(coordinates);
   });
 
 }
 
-fire(table1);
-fire(table2);
+chooseSquare(table1);
+chooseSquare(table2);
