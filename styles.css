@@ -23,8 +23,7 @@ td {
 .boards {
   display: flex;
   flex-flow: row nowrap;
-  justify-content: space-between; 
-
+  justify-content: space-between;
 }
 
 #board_one {
@@ -40,4 +39,5 @@ table {
   border-spacing: 0px;
   height: 24em;
   width: 24em;
+  cursor: pointer;
 }
