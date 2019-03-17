@@ -4,7 +4,6 @@ table1.classList.add('table1');
 const table2 = document.createElement('table');
 table2.classList.add('table2');
 
-
 const createTables = table => {
 
   for (let i = 0; i < 10; i++) {
@@ -17,8 +16,8 @@ const createTables = table => {
       const tableData = document.createElement('td');
       tableData.classList.add(`${i}${j}`);
       tableRow.appendChild(tableData);
-      tableData.innerHTML = 0;
     }
+
     table.appendChild(tableRow);
   }
 }
@@ -39,7 +38,8 @@ const colCount = document.querySelectorAll('td').length / (rowCount * 2);
 // Ships
 const ships = {
   carrier: {
-    position: [0, 0, 0, 0, 0], hits: 5
+    position: [0, 0, 0, 0, 0],
+    hits: 5
   },
   battleship: {
     position: [0, 0, 0, 0],
@@ -59,6 +59,16 @@ const ships = {
   }
 };
 
+const shipMatrix = () => {
+  const matrix = [];
+  for (var i = 0; i < rowCount; i++) {
+    matrix.push(Array(rowCount).fill(1));
+  }
+  console.log(matrix)
+  return matrix;
+}
+shipMatrix();
+
 // Random computer ship placing function
 const placeComputerShips = (ship, coordinates, hits) => {
 
@@ -75,16 +85,68 @@ const placeComputerShips = (ship, coordinates, hits) => {
   let row = randNum(rowCount);
   let column = randNum(colCount);
 
-  if (upDownChoice === 'vertical') {
-    // console.log('V', ship, coordinates, hits, row, column)
-    if (leftRightChoice === 'right' && column < 9) {
 
+
+  if (upDownChoice === 'vertical') {
+    
+    if (leftRightChoice === 'right' && column < 9) {
+      console.log('V', 'R', ship, coordinates, hits, row, column);
     }
+
+    if (leftRightChoice === 'left' && column > 0) {
+      console.log('V', 'L', ship, coordinates, hits, row, column);
+    }
+
   } else {
-    // console.log('H', ship, coordinates, hits, row, column)
+    
+    if (leftRightChoice === 'right' && column < 9) {
+      console.log('H', 'R', ship, coordinates, hits, row, column);
+    }
+
+    if (leftRightChoice === 'left' && column > 0) {
+      console.log('H', 'L', ship, coordinates, hits, row, column);
+    }
   }
   // flag squares for a ship's length
 }
+
+const pickDifferentSpots = () => {
+  const usedNums = [];
+
+  const randNum = max => Math.floor(Math.random() * max);
+
+  // const upOrDown = ['vertical', 'horizontal'];
+  // const leftOrRight = ['left', 'right'];
+
+  // let counter = coordinates.length;
+
+  let startNum = randNum(rowCount * colCount);
+  startNum = startNum.toString();
+  startNum = startNum.length < 2 ? '0'.concat(startNum) : startNum;
+
+  let row = Number(startNum.split('')
+                      .join('')[0]);
+
+  let column = Number(startNum.split('')
+                      .join('')[1]);
+
+  console.log(startNum, row, column)
+
+  if (!usedNums.includes(startNum)) {
+    usedNums.push(startNum);
+  }
+
+  console.log(usedNums)
+
+  // let upDownChoice = upOrDown[randNum(upOrDown.length)];
+  // let leftRightChoice = leftOrRight[randNum(leftOrRight.length)];
+
+  // let row = randNum(rowCount);
+  // let column = randNum(colCount);
+
+}
+
+pickDifferentSpots()
 
 for (let el in ships) {
 
@@ -101,7 +163,7 @@ for (let el in ships) {
     }
 
   }
-
+  // console.log('ship loop', el, coordinates, missiles);
   placeComputerShips(el, coordinates, missiles);  
 }
 
@@ -111,11 +173,11 @@ for (let el in ships) {
 // Capture coordinates on click
 const chooseSquare = table => {
 
-  table.addEventListener("click", function( event ) {   
+  table.addEventListener("click", event => {   
     // const coordinates = [event.target.className[0], event.target.className[1]];
     const coordinates = event.target.className;
     console.log(coordinates)
-    return Number(coordinates);
+    return coordinates;
   });
 
 }
