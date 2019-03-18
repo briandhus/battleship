@@ -62,24 +62,24 @@ const ships = {
 const shipMatrix = () => {
   const matrix = [];
   for (var i = 0; i < rowCount; i++) {
-    matrix.push(Array(rowCount).fill(1));
+    matrix.push(Array(rowCount).fill(0));
   }
-  console.log(matrix)
   return matrix;
 }
-shipMatrix();
+
+let matrix = shipMatrix();
 
 // Random computer ship placing function
 const placeComputerShips = (ship, coordinates, hits) => {
 
   const randNum = max => Math.floor(Math.random() * max);
 
-  const upOrDown = ['vertical', 'horizontal'];
+  let horOrVert = ['vertical', 'horizontal'];
   const leftOrRight = ['left', 'right'];
 
   let counter = coordinates.length;
 
-  let upDownChoice = upOrDown[randNum(upOrDown.length)];
+  horOrVert = horOrVert[randNum(horOrVert.length)];
   let leftRightChoice = leftOrRight[randNum(leftOrRight.length)];
 
   let row = randNum(rowCount);
@@ -87,35 +87,38 @@ const placeComputerShips = (ship, coordinates, hits) => {
 
 
 
-  if (upDownChoice === 'vertical') {
+  if (horOrVert === 'vertical') {
     
     if (leftRightChoice === 'right' && column < 9) {
-      console.log('V', 'R', ship, coordinates, hits, row, column);
+      // console.log('V', 'R', ship, coordinates, hits, row, column);
     }
 
     if (leftRightChoice === 'left' && column > 0) {
-      console.log('V', 'L', ship, coordinates, hits, row, column);
+      // console.log('V', 'L', ship, coordinates, hits, row, column);
     }
 
   } else {
     
     if (leftRightChoice === 'right' && column < 9) {
-      console.log('H', 'R', ship, coordinates, hits, row, column);
+      // console.log('H', 'R', ship, coordinates, hits, row, column);
     }
 
     if (leftRightChoice === 'left' && column > 0) {
-      console.log('H', 'L', ship, coordinates, hits, row, column);
+      // console.log('H', 'L', ship, coordinates, hits, row, column);
     }
   }
   // flag squares for a ship's length
 }
 
 const pickDifferentSpots = () => {
+
   const usedNums = [];
 
   const randNum = max => Math.floor(Math.random() * max);
 
-  // const upOrDown = ['vertical', 'horizontal'];
+  let horOrVert = ['vertical', 'horizontal'];
+  horOrVert = horOrVert[randNum(horOrVert.length)];
+
   // const leftOrRight = ['left', 'right'];
 
   // let counter = coordinates.length;
@@ -130,15 +133,15 @@ const pickDifferentSpots = () => {
   let column = Number(startNum.split('')
                       .join('')[1]);
 
-  console.log(startNum, row, column)
+  // console.log(startNum, row, column);
 
   if (!usedNums.includes(startNum)) {
     usedNums.push(startNum);
   }
 
-  console.log(usedNums)
+  // console.log(usedNums);
 
-  // let upDownChoice = upOrDown[randNum(upOrDown.length)];
+  
   // let leftRightChoice = leftOrRight[randNum(leftOrRight.length)];
 
   // let row = randNum(rowCount);
@@ -146,29 +149,154 @@ const pickDifferentSpots = () => {
 
 }
 
-pickDifferentSpots()
+pickDifferentSpots();
 
-for (let el in ships) {
+const determineVerticalStart = (ship, coordinates, matrix) => {
 
+  // random number generator, non inclusive
+  const randNum = max => Math.floor(Math.random() * max);
+
+  let length = coordinates.length;
+
+  let horOrVert = ['vertical', 'horizontal'];
+  horOrVert = horOrVert[randNum(horOrVert.length)];
+
+  let row = 0;
+  let column = 0;
+
+  let counter = 0;
+
+  let vertDirection = 'down';
+  let horDirection = 'right';
+
+  if (horOrVert === 'vertical') {
+    
+    row = randNum(length);
+    column = randNum(colCount);
+
+  }
+
+  if (horOrVert === 'horizontal') {
+    
+    row = randNum(rowCount);
+    column = randNum(length);
+    
+  }
+
+  let startRow = row;
+  let startColumn = column;
+
+  // console.log(horOrVert, row, column, matrix, length)
+
+
+  while (length > 0) {
+
+    if (horOrVert === 'vertical') {
+
+      if (vertDirection === 'down') {
+
+        if (!matrix[row][column]) {
+          matrix[row][column] = 1;
+          row++;
+          // counter++;
+        } 
+
+        if (matrix[row][column] && startRow > 0) {
+          row = startRow - 1;
+          matrix[row][column] = 1;
+          row--;
+          vertDirection = 'up';
+          // counter++;
+        }
+
+      } else {
+
+        if (row > 0) {
+
+          if (!matrix[row][column]) {
+            matrix[row][column] = 1;
+            row--;
+            // counter++;
+          } 
+
+        } else {
+          if (!matrix[row][column]) {
+            matrix[row][column] = 1;
+          }
+        }
+
+      }     
+    }
+
+    if (horOrVert === 'horizontal') {
+
+      if (horDirection === 'right') {
+
+        if (!matrix[row][column]) {
+          matrix[row][column] = 1;
+          column++;
+          // counter++;
+        } 
+
+        if (matrix[row][column] && startColumn > 0) {
+          column = startColumn - 1;
+          matrix[row][column] = 1;
+          column--;
+          horDirection = 'left';
+          // counter++;
+        }
+
+      } else {
+
+        if (column > 0) {
+
+          if (!matrix[row][column]) {
+            matrix[row][column] = 1;
+            column--;
+            // counter++;
+          } 
+
+        } else {
+          if (!matrix[row][column]) {
+            matrix[row][column] = 1;
+          }
+        }
+
+      }     
+    }
+
+    length--;
+  }
+  console.log(ship, horOrVert, startRow, startColumn, row, column, matrix)
+}
+
+
+const loopShips = (ships) => {
+
+  let ship;
   let coordinates = [];
   let missiles = 0;
 
-  for (let stats in ships[el]) {
+  for (ship in ships) {
 
-    if (stats === 'position') {
-      coordinates = ships[el][stats];
-    }
-    if (stats === 'hits') {
-      missiles = ships[el][stats];
+    for (let stats in ships[ship]) {
+
+      if (stats === 'position') {
+        coordinates = ships[ship][stats];
+      }
+      if (stats === 'hits') {
+        missiles = ships[ship][stats];
+      }
+
     }
 
-  }
-  // console.log('ship loop', el, coordinates, missiles);
-  placeComputerShips(el, coordinates, missiles);  
+  determineVerticalStart(ship, coordinates, matrix);
+  } 
+  // console.log('ship loop', ship, coordinates, missiles);
+  // placeComputerShips(ship, coordinates, missiles);  
 }
 
-// Game instructions and options
-
+loopShips(ships);
 
 // Capture coordinates on click
 const chooseSquare = table => {
@@ -184,3 +312,6 @@ const chooseSquare = table => {
 
 chooseSquare(table1);
 chooseSquare(table2);
+
+// Game instructions and options
+
