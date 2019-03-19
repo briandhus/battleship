@@ -70,88 +70,7 @@ const shipMatrix = () => {
 let matrix = shipMatrix();
 
 // Random computer ship placing function
-const placeComputerShips = (ship, coordinates, hits) => {
-
-  const randNum = max => Math.floor(Math.random() * max);
-
-  let horOrVert = ['vertical', 'horizontal'];
-  const leftOrRight = ['left', 'right'];
-
-  let counter = coordinates.length;
-
-  horOrVert = horOrVert[randNum(horOrVert.length)];
-  let leftRightChoice = leftOrRight[randNum(leftOrRight.length)];
-
-  let row = randNum(rowCount);
-  let column = randNum(colCount);
-
-
-
-  if (horOrVert === 'vertical') {
-    
-    if (leftRightChoice === 'right' && column < 9) {
-      // console.log('V', 'R', ship, coordinates, hits, row, column);
-    }
-
-    if (leftRightChoice === 'left' && column > 0) {
-      // console.log('V', 'L', ship, coordinates, hits, row, column);
-    }
-
-  } else {
-    
-    if (leftRightChoice === 'right' && column < 9) {
-      // console.log('H', 'R', ship, coordinates, hits, row, column);
-    }
-
-    if (leftRightChoice === 'left' && column > 0) {
-      // console.log('H', 'L', ship, coordinates, hits, row, column);
-    }
-  }
-  // flag squares for a ship's length
-}
-
-const pickDifferentSpots = () => {
-
-  const usedNums = [];
-
-  const randNum = max => Math.floor(Math.random() * max);
-
-  let horOrVert = ['vertical', 'horizontal'];
-  horOrVert = horOrVert[randNum(horOrVert.length)];
-
-  // const leftOrRight = ['left', 'right'];
-
-  // let counter = coordinates.length;
-
-  let startNum = randNum(rowCount * colCount);
-  startNum = startNum.toString();
-  startNum = startNum.length < 2 ? '0'.concat(startNum) : startNum;
-
-  let row = Number(startNum.split('')
-                      .join('')[0]);
-
-  let column = Number(startNum.split('')
-                      .join('')[1]);
-
-  // console.log(startNum, row, column);
-
-  if (!usedNums.includes(startNum)) {
-    usedNums.push(startNum);
-  }
-
-  // console.log(usedNums);
-
-  
-  // let leftRightChoice = leftOrRight[randNum(leftOrRight.length)];
-
-  // let row = randNum(rowCount);
-  // let column = randNum(colCount);
-
-}
-
-pickDifferentSpots();
-
-const determineVerticalStart = (ship, coordinates, matrix) => {
+const placeComputerShips = (ship, coordinates, matrix) => {
 
   // random number generator, non inclusive
   const randNum = max => Math.floor(Math.random() * max);
@@ -198,13 +117,13 @@ const determineVerticalStart = (ship, coordinates, matrix) => {
         if (!matrix[row][column]) {
           matrix[row][column] = 1;
           row++;
-          // counter++;
+          counter++;
         } 
 
-        if (matrix[row][column] && startRow > 0) {
-          row = startRow - 1;
-          matrix[row][column] = 1;
-          row--;
+        if (matrix[row][column] && (row - counter) > 0) { // try row - counter
+          row = row - counter - 1;
+          // matrix[row][column] = 1;
+          // row--;
           vertDirection = 'up';
           // counter++;
         }
@@ -216,15 +135,17 @@ const determineVerticalStart = (ship, coordinates, matrix) => {
           if (!matrix[row][column]) {
             matrix[row][column] = 1;
             row--;
-            // counter++;
+            counter++;
           } 
 
         } else {
+
           if (!matrix[row][column]) {
             matrix[row][column] = 1;
+            counter++;
           }
-        }
 
+        }
       }     
     }
 
@@ -235,13 +156,13 @@ const determineVerticalStart = (ship, coordinates, matrix) => {
         if (!matrix[row][column]) {
           matrix[row][column] = 1;
           column++;
-          // counter++;
+          counter++;
         } 
 
-        if (matrix[row][column] && startColumn > 0) {
+        if (matrix[row][column] && (column - counter) > 0) {
           column = startColumn - 1;
-          matrix[row][column] = 1;
-          column--;
+          // matrix[row][column] = 1;
+          // column--;
           horDirection = 'left';
           // counter++;
         }
@@ -253,15 +174,17 @@ const determineVerticalStart = (ship, coordinates, matrix) => {
           if (!matrix[row][column]) {
             matrix[row][column] = 1;
             column--;
-            // counter++;
+            counter++;
           } 
 
         } else {
+
           if (!matrix[row][column]) {
             matrix[row][column] = 1;
+            counter++;
           }
-        }
 
+        }
       }     
     }
 
@@ -290,28 +213,67 @@ const loopShips = (ships) => {
 
     }
 
-  determineVerticalStart(ship, coordinates, matrix);
+    placeComputerShips(ship, coordinates, matrix);
+
   } 
-  // console.log('ship loop', ship, coordinates, missiles);
-  // placeComputerShips(ship, coordinates, missiles);  
+  // console.log('ship loop', ship, coordinates, missiles); 
 }
 
 loopShips(ships);
 
-// Capture coordinates on click
-const chooseSquare = table => {
+// Determine if strike is a hit, miss, or already hit
+const strike = (row, col) => {
+  console.log(row, col, matrix)
+  let hits = 0;
+  let misses = 0;
+  const alreadyHit = 'You already hit this location! Target another spot.';
 
-  table.addEventListener("click", event => {   
-    // const coordinates = [event.target.className[0], event.target.className[1]];
-    const coordinates = event.target.className;
-    console.log(coordinates)
-    return coordinates;
-  });
+  if (matrix[row][col] === 1) {
+    matrix[row][col] = 2;
+    hits++;
+    return hits;
+  } 
 
+  if (matrix[row][col] > 1) {
+    alert(alreadyHit);
+    return alreadyHit;
+  }
+
+  if (matrix[row][col] === 0) {
+    matrix[row][col] = 3;
+    return alreadyHit;
+  }
 }
 
-chooseSquare(table1);
-chooseSquare(table2);
+// Capture coordinates on click
+const chooseSquare = (table) => {
+
+  let row = 0;
+  let col = 0;
+
+  table.addEventListener("click", event => {   
+
+    const coordinates = event.target.className;
+
+    row = Number(coordinates[0]);
+    col = Number(coordinates[1]);
+
+    return strike(row, col);
+
+  });
+}
+
+// let playerBoardTarget = chooseSquare(table1);
+let computerBoardTarget = chooseSquare(table2);
+
+
+
 
 // Game instructions and options
+const messages = {
+  welcome: 'Are you ready to play Battleship?',
+  playerShip: 'Choose location of your ',
+  attack: 'Click on a square from zone 2 to fire at!',
+  
+}
 
