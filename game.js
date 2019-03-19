@@ -31,7 +31,8 @@ const boardTwo = document.getElementById('board_two');
 boardOne.appendChild(table1);
 boardTwo.appendChild(table2);
 
-// Get row and column counts dynamically in case I add the ability to create board size later
+/* Get row and column counts dynamically in case I add 
+the ability for user to create board size later */
 const rowCount = table1.childNodes.length;
 const colCount = document.querySelectorAll('td').length / (rowCount * 2);
 
@@ -59,6 +60,7 @@ const ships = {
   }
 };
 
+// Generate matrix for game logic
 const shipMatrix = () => {
   const matrix = [];
   for (var i = 0; i < rowCount; i++) {
@@ -107,7 +109,6 @@ const placeComputerShips = (ship, coordinates, matrix) => {
 
   // console.log(horOrVert, row, column, matrix, length)
 
-
   while (length > 0) {
 
     if (horOrVert === 'vertical') {
@@ -120,7 +121,7 @@ const placeComputerShips = (ship, coordinates, matrix) => {
           counter++;
         } 
 
-        if (matrix[row][column] && (row - counter) > 0) { // try row - counter
+        if (matrix[row][column] && (row - counter) > 0) {
           row = row - counter - 1;
           // matrix[row][column] = 1;
           // row--;
@@ -160,7 +161,7 @@ const placeComputerShips = (ship, coordinates, matrix) => {
         } 
 
         if (matrix[row][column] && (column - counter) > 0) {
-          column = startColumn - 1;
+          column = column - counter - 1;
           // matrix[row][column] = 1;
           // column--;
           horDirection = 'left';
@@ -221,59 +222,110 @@ const loopShips = (ships) => {
 
 loopShips(ships);
 
+
+// Game instructions and options
+const messages = {
+  welcome: 'Are you ready to play Battleship?',
+  start: 'Click to start',
+  playerShip: 'Choose location of your ',
+  next: 'Next ship',
+  attack: 'Click on a square in zone 2 to fire at!',
+  alreadyHit: 'You already hit this location! Target another spot.',
+  hit: 'Direct HIT!',
+  miss: 'Splash, you hit water.'
+}
+
 // Determine if strike is a hit, miss, or already hit
-const strike = (row, col) => {
+const strike = (row, col, message) => {
   console.log(row, col, matrix)
   let hits = 0;
   let misses = 0;
-  const alreadyHit = 'You already hit this location! Target another spot.';
 
   if (matrix[row][col] === 1) {
     matrix[row][col] = 2;
     hits++;
+    alert(message.hit);
     return hits;
   } 
 
   if (matrix[row][col] > 1) {
-    alert(alreadyHit);
-    return alreadyHit;
+    alert(message.alreadyHit);
   }
 
   if (matrix[row][col] === 0) {
     matrix[row][col] = 3;
-    return alreadyHit;
+    misses++;
+    alert(message.miss);
+    return misses;
   }
 }
 
-// Capture coordinates on click
-const chooseSquare = (table) => {
+const placePlayerShips = (row, col, table) => {
 
+  let td = `${row}${col}`;
+  console.log(row, col, td, table);
+
+}
+
+// Capture coordinates on click
+const chooseSquare = (table, message) => {
   let row = 0;
   let col = 0;
 
-  table.addEventListener("click", event => {   
+  table.addEventListener('click', event => {   
 
     const coordinates = event.target.className;
 
     row = Number(coordinates[0]);
     col = Number(coordinates[1]);
 
-    return strike(row, col);
+    if (table === table2) {
+      strike(row, col, message);      
+    } 
+
+    if (table === table1) {
+      placePlayerShips(row, col, table);
+    }
 
   });
 }
 
-// let playerBoardTarget = chooseSquare(table1);
-let computerBoardTarget = chooseSquare(table2);
+let playerBoardTarget = chooseSquare(table1);
+let computerBoardTarget = chooseSquare(table2, messages);
 
-
-
-
-// Game instructions and options
-const messages = {
-  welcome: 'Are you ready to play Battleship?',
-  playerShip: 'Choose location of your ',
-  attack: 'Click on a square from zone 2 to fire at!',
+const displayMessage = (message, spanMessage) => {
+  const node = document.createElement('p');
+  const textNode = document.createTextNode(message);
+  node.classList.add('messages');
+  node.appendChild(textNode);
+  const messageZone = document.querySelector('.inputs');
+  messageZone.appendChild(node);
   
+  const button = document.createElement('button');
+  button.setAttribute('class','button');
+  const span = document.createElement('span');
+  span.setAttribute('class','confirm');
+  span.innerHTML = spanMessage;
+  button.appendChild(span);    
+  node.appendChild(button);
 }
 
+const clearMessage = () => {
+  const message = document.querySelector('.messages');
+  message.setAttribute('style', 'display: none;');
+}
+
+displayMessage(messages.welcome, messages.start);
+
+const changeMessage = (message) => {
+  const button = document.querySelector('.button');
+  const span = document.querySelector('.confirm');
+  const p = document.querySelector('.messages');
+
+  button.addEventListener('click', event => {
+    clearMessage();
+    displayMessage(message.playerShip, message.next);
+  })
+}
+
+changeMessage(messages);
