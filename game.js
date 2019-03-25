@@ -116,7 +116,7 @@ const placeComputerShips = (ship, coordinates, matrix) => {
       if (vertDirection === 'down') {
 
         if (!matrix[row][column]) {
-          matrix[row][column] = 1;
+          matrix[row][column] = {'ship': ship, 1: 1};
           row++;
           counter++;
         } 
@@ -134,7 +134,7 @@ const placeComputerShips = (ship, coordinates, matrix) => {
         if (row > 0) {
 
           if (!matrix[row][column]) {
-            matrix[row][column] = 1;
+            matrix[row][column] = {'ship': ship, 1: 1};
             row--;
             counter++;
           } 
@@ -142,7 +142,7 @@ const placeComputerShips = (ship, coordinates, matrix) => {
         } else {
 
           if (!matrix[row][column]) {
-            matrix[row][column] = 1;
+            matrix[row][column] = {'ship': ship, 1: 1};
             counter++;
           }
 
@@ -155,7 +155,7 @@ const placeComputerShips = (ship, coordinates, matrix) => {
       if (horDirection === 'right') {
 
         if (!matrix[row][column]) {
-          matrix[row][column] = 1;
+          matrix[row][column] = {'ship': ship, 1: 1};
           column++;
           counter++;
         } 
@@ -173,7 +173,7 @@ const placeComputerShips = (ship, coordinates, matrix) => {
         if (column > 0) {
 
           if (!matrix[row][column]) {
-            matrix[row][column] = 1;
+            matrix[row][column] = {'ship': ship, 1: 1};
             column--;
             counter++;
           } 
@@ -181,7 +181,7 @@ const placeComputerShips = (ship, coordinates, matrix) => {
         } else {
 
           if (!matrix[row][column]) {
-            matrix[row][column] = 1;
+            matrix[row][column] = {'ship': ship, 1: 1};
             counter++;
           }
 
@@ -236,16 +236,19 @@ const messages = {
 }
 
 // Determine if strike is a hit, miss, or already hit
-const strike = (row, col, message) => {
+const strike = (row, col, message, node) => {
   console.log(row, col, matrix)
-  let hits = 0;
   let misses = 0;
 
-  if (matrix[row][col] === 1) {
+  if (matrix[row][col][1] === 1) {
+    let shipName = matrix[row][col]['ship'];
     matrix[row][col] = 2;
-    hits++;
-    alert(message.hit);
-    return hits;
+    ships[shipName]['hits']--;
+    node.classList.add('hit');
+    if (ships[shipName]['hits'] === 0) {
+      alert(`You sank my ${shipName}`);
+    }
+    return;
   } 
 
   if (matrix[row][col] > 1) {
@@ -255,7 +258,7 @@ const strike = (row, col, message) => {
   if (matrix[row][col] === 0) {
     matrix[row][col] = 3;
     misses++;
-    alert(message.miss);
+    node.classList.add('miss');
     return misses;
   }
 }
@@ -280,7 +283,7 @@ const chooseSquare = (table, message) => {
     col = Number(coordinates[1]);
 
     if (table === table2) {
-      strike(row, col, message);      
+      strike(row, col, message, event.target);      
     } 
 
     if (table === table1) {

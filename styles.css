@@ -71,3 +71,11 @@ table {
   color: #000e8c;
 }
 
+.hit {
+  background-color: red;
+}
+
+.miss {
+  background-color: blue;
+}
+
