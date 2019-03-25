@@ -57,7 +57,8 @@ const ships = {
   destroyer: {
     position: [0, 0],
     hits: 2
-  }
+  },
+  activeShips: 5
 };
 
 // Generate matrix for game logic
@@ -70,6 +71,51 @@ const shipMatrix = () => {
 }
 
 let matrix = shipMatrix();
+
+// Function to check that ship will fit where placed
+const checkFit = (direction, ship, row, col) => {
+
+  if (direction === 'horizontal') {
+    for (let i = col; i < col + ships[ship][hits]; i++) {
+      if (matrix[row][col] !== 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  if (direction === 'vertical') {
+    for (let i = row; i < row + ships[ship][hits]; i++) {
+
+      if (matrix[row] === undefined) {
+        return false;
+      }
+
+      if (matrix[row][col] !== 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+}
+
+// Place ship
+const placeShip = (direction, ship, row, col) => {
+  
+  if (direction === 'horizontal') {
+    for (let i = col; i < col + ships[ship]['hits']; i++) {
+      matrix[row][i] = {'ship': ship, 1: 1};
+    }
+  }
+
+  if (direction === 'vertical') {
+    for (let i = row; i < row + ships[ship]['hits']; i++) {
+      matrix[i][col] = {'ship': ship, 1: 1};
+    }
+  }
+  
+}
 
 // Random computer ship placing function
 const placeComputerShips = (ship, coordinates, matrix) => {
@@ -245,8 +291,14 @@ const strike = (row, col, message, node) => {
     matrix[row][col] = 2;
     ships[shipName]['hits']--;
     node.classList.add('hit');
+
     if (ships[shipName]['hits'] === 0) {
-      alert(`You sank my ${shipName}`);
+      ships['activeShips']--;
+      console.log(`You sank my ${shipName}`);
+    }
+
+    if (ships['activeShips'] === 0) {
+      console.log('You win!');
     }
     return;
   } 
