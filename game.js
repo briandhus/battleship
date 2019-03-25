@@ -76,7 +76,7 @@ let matrix = shipMatrix();
 const checkFit = (direction, ship, row, col) => {
 
   if (direction === 'horizontal') {
-    for (let i = col; i < col + ships[ship][hits]; i++) {
+    for (let i = col; i < col + ships[ship]['hits']; i++) {
       if (matrix[row][col] !== 0) {
         return false;
       }
@@ -85,7 +85,7 @@ const checkFit = (direction, ship, row, col) => {
   }
 
   if (direction === 'vertical') {
-    for (let i = row; i < row + ships[ship][hits]; i++) {
+    for (let i = row; i < row + ships[ship]['hits']; i++) {
 
       if (matrix[row] === undefined) {
         return false;
@@ -102,7 +102,7 @@ const checkFit = (direction, ship, row, col) => {
 
 // Place ship
 const placeShip = (direction, ship, row, col) => {
-  
+
   if (direction === 'horizontal') {
     for (let i = col; i < col + ships[ship]['hits']; i++) {
       matrix[row][i] = {'ship': ship, 1: 1};
@@ -118,152 +118,33 @@ const placeShip = (direction, ship, row, col) => {
 }
 
 // Random computer ship placing function
-const placeComputerShips = (ship, coordinates, matrix) => {
+const placeComputerShips = (ship) => {
 
   // random number generator, non inclusive
   const randNum = max => Math.floor(Math.random() * max);
 
-  let length = coordinates.length;
-
   let horOrVert = ['vertical', 'horizontal'];
   horOrVert = horOrVert[randNum(horOrVert.length)];
 
-  let row = 0;
-  let column = 0;
+  let row = randNum(matrix.length);
+  let col = randNum(matrix[0].length);
 
-  let counter = 0;
-
-  let vertDirection = 'down';
-  let horDirection = 'right';
-
-  if (horOrVert === 'vertical') {
-    
-    row = randNum(length);
-    column = randNum(colCount);
-
+  if (checkFit(horOrVert, ship, row, col)) {
+    placeShip(horOrVert, ship, row, col);
+  } else {
+    placeComputerShips(ship);
   }
-
-  if (horOrVert === 'horizontal') {
-    
-    row = randNum(rowCount);
-    column = randNum(length);
-    
-  }
-
-  let startRow = row;
-  let startColumn = column;
-
-  // console.log(horOrVert, row, column, matrix, length)
-
-  while (length > 0) {
-
-    if (horOrVert === 'vertical') {
-
-      if (vertDirection === 'down') {
-
-        if (!matrix[row][column]) {
-          matrix[row][column] = {'ship': ship, 1: 1};
-          row++;
-          counter++;
-        } 
-
-        if (matrix[row][column] && (row - counter) > 0) {
-          row = row - counter - 1;
-          // matrix[row][column] = 1;
-          // row--;
-          vertDirection = 'up';
-          // counter++;
-        }
-
-      } else {
-
-        if (row > 0) {
-
-          if (!matrix[row][column]) {
-            matrix[row][column] = {'ship': ship, 1: 1};
-            row--;
-            counter++;
-          } 
-
-        } else {
-
-          if (!matrix[row][column]) {
-            matrix[row][column] = {'ship': ship, 1: 1};
-            counter++;
-          }
-
-        }
-      }     
-    }
-
-    if (horOrVert === 'horizontal') {
-
-      if (horDirection === 'right') {
-
-        if (!matrix[row][column]) {
-          matrix[row][column] = {'ship': ship, 1: 1};
-          column++;
-          counter++;
-        } 
-
-        if (matrix[row][column] && (column - counter) > 0) {
-          column = column - counter - 1;
-          // matrix[row][column] = 1;
-          // column--;
-          horDirection = 'left';
-          // counter++;
-        }
-
-      } else {
-
-        if (column > 0) {
-
-          if (!matrix[row][column]) {
-            matrix[row][column] = {'ship': ship, 1: 1};
-            column--;
-            counter++;
-          } 
-
-        } else {
-
-          if (!matrix[row][column]) {
-            matrix[row][column] = {'ship': ship, 1: 1};
-            counter++;
-          }
-
-        }
-      }     
-    }
-
-    length--;
-  }
-  console.log(ship, horOrVert, startRow, startColumn, row, column, matrix)
+  
+  console.log(matrix);
 }
 
 
 const loopShips = (ships) => {
-
-  let ship;
-  let coordinates = [];
-  let missiles = 0;
-
-  for (ship in ships) {
-
-    for (let stats in ships[ship]) {
-
-      if (stats === 'position') {
-        coordinates = ships[ship][stats];
-      }
-      if (stats === 'hits') {
-        missiles = ships[ship][stats];
-      }
-
+  for (let ship in ships) {  
+    if (ship !== 'activeShips') {
+      placeComputerShips(ship);
     }
-
-    placeComputerShips(ship, coordinates, matrix);
-
   } 
-  // console.log('ship loop', ship, coordinates, missiles); 
 }
 
 loopShips(ships);
