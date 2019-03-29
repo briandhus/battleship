@@ -309,6 +309,7 @@ const strike = (row, col, message, node) => {
     matrix[row][col] = 2;
     ships[shipName]['hits']--;
     node.classList.add('hit');
+    computerStrike(playerMatrix);
 
     if (ships[shipName]['hits'] === 0) {
       ships['activeShips']--;
@@ -329,6 +330,7 @@ const strike = (row, col, message, node) => {
     matrix[row][col] = 3;
     misses++;
     node.classList.add('miss');
+    computerStrike(playerMatrix);
     return misses;
   }
 }
@@ -347,7 +349,7 @@ const chooseSquare = (table, message) => {
 
     if (table === table2) {
       strike(row, col, message, event.target);
-      computerStrike(playerMatrix);   
+      // computerStrike(playerMatrix);   
     } 
 
   });
