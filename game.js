@@ -230,7 +230,7 @@ const placePlayerShips = () => {
     } else {
       alert('Ship won\'t fit here. Choose a new location.');
     }
-    console.log(playerMatrix, index);
+    console.log(playerMatrix);
   })
 
 
@@ -270,9 +270,38 @@ const loopShips = (ships) => {
 
 loopShips(ships);
 
+// generate random strikes for computer
+const computerStrike = (matrix) => {
+  const randNum = max => Math.floor(Math.random() * max);
+
+  let i = randNum(matrix.length);
+  let j = randNum(matrix[0].length);
+
+  if (matrix[i][j] === 0){
+    matrix[i][j] = 3;
+    console.log('computer missed: ', i, j);
+
+  } else if (matrix[i][j] === 3) {
+    console.log('already hit here: ', i, j);
+    computerStrike(matrix);
+
+  } else if (matrix[i][j] && matrix[i][j][1] === 1) {
+    matrix[i][j][1] = 2;
+    console.log('hit: ', i, j);
+
+  } else if (matrix[i][j] && matrix[i][j][1] === 2) {
+    matrix[i][j][1] = 2;
+    console.log('already hit : ', i, j);
+    computerStrike(matrix);
+
+  } 
+
+  console.log(matrix, i, j);
+}
+
 // Determine if strike is a hit, miss, or already hit
 const strike = (row, col, message, node) => {
-  console.log(row, col, matrix)
+  // console.log(row, col, matrix)
   let misses = 0;
 
   if (matrix[row][col][1] === 1) {
@@ -317,20 +346,25 @@ const chooseSquare = (table, message) => {
     col = Number(coordinates[1]);
 
     if (table === table2) {
-      strike(row, col, message, event.target);      
+      strike(row, col, message, event.target);
+      computerStrike(playerMatrix);   
     } 
-
-    if (table === table1) {
-      // placePlayerShips(row, col, table);
-    }
 
   });
 }
 
-// let playerBoardTarget = chooseSquare(table1);
-let computerBoardTarget = chooseSquare(table2, messages);
+let strikeComputerBoard = chooseSquare(table2, messages);
 
 // displayMessage(messages.ship[0]);
+
+
+
+
+// let strikePlayerBoard = chooseSquare(table1);
+
+
+
+
 
 const changeMessage = (message) => {
   const button = document.querySelector('.button');
@@ -343,4 +377,4 @@ const changeMessage = (message) => {
   // })
 }
 
-changeMessage(messages);
+// changeMessage(messages);
