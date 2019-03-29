@@ -203,16 +203,35 @@ const placeComputerShips = (ship) => {
   }
 }
 
+// Capture coordinates on click
+const chooseSquare = (table, message) => {
+  let row = 0;
+  let col = 0;
+
+  table.addEventListener('click', event => {   
+
+    const coordinates = event.target.className;
+
+    row = Number(coordinates[0]);
+    col = Number(coordinates[1]);
+
+    strike(row, col, message, event.target);  
+
+  });
+}
+
 // Function for player to place ships
 const placePlayerShips = () => {
 
   const table1 = document.querySelector('.table1');
   const shipArray = ['carrier', 'battleship', 'cruiser', 'submarine', 'destroyer'];
   let index = 0;
+  
   displayMessage(messages.ship[index]);
 
   table1.addEventListener('click', event => {
 
+    if (index === 4) chooseSquare(table2);
     if (index > 4) return;
 
     const row = Number(event.target.className[0]);
@@ -366,21 +385,3 @@ const strike = (row, col, message, node) => {
   console.log('computer: ', matrix);
 }
 
-// Capture coordinates on click
-const chooseSquare = (table, message) => {
-  let row = 0;
-  let col = 0;
-
-  table.addEventListener('click', event => {   
-
-    const coordinates = event.target.className;
-
-    row = Number(coordinates[0]);
-    col = Number(coordinates[1]);
-
-    strike(row, col, message, event.target);  
-
-  });
-}
-
-let strikeComputerBoard = chooseSquare(table2, messages);
