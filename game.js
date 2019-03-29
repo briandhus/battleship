@@ -81,16 +81,21 @@ let playerMatrix = shipMatrix();
 
 // Game instructions and options
 const messages = {
-  ship: ['Choose location of your carrier.', 
-          'Choose location of your battleship.',
-          'Choose location of your cruiser.',
-          'Choose location of your submarine.',
-          'Choose location of your destroyer.'],
+  ship: ['Click on a square in Zone 1 to choose the location of your Carrier.', 
+          'Click on a square in Zone 1 to choose the location of your Battleship.',
+          'Click on a square in Zone 1 to choose the location of your Cruiser.',
+          'Click on a square in Zone 1 to choose the location of your Submarine.',
+          'Click on a square in Zone 1 to choose the location of your Destroyer.'],
   start: 'Click to start',
-  attack: 'Click on a square in zone 2 to fire at!',
+  attack: 'Click on a square in Zone 2 to fire at!',
   alreadyHit: 'You already hit this location! Target another spot.',
   hit: 'Direct HIT!',
-  miss: 'Splash, you hit water.'
+  computerHit: 'Boom! I hit ya!',
+  miss: 'Splash, you hit water.',
+  playerSink: 'Shiver me timbers, you sank my ',
+  computerSink: 'Yo-ho-ho Matey, I sank yer ',
+  win: 'You sank my entire fleet! You WIN!',
+  loss: 'Computer Pirate wins, better luck next time!'
 }
 
 const displayMessage = (message, end) => {
@@ -164,7 +169,7 @@ const checkFit = (direction, ship, row, col, matrix) => {
 
 // Place ship
 const placeShip = (direction, ship, row, col, matrix) => {
-  //console.log(direction, ship, row, col);
+
   if (direction === 'horizontal') {
     for (let i = col; i < col + ships[ship]['hits']; i++) {
       matrix[row][i] = {'ship': ship, 1: 1};
@@ -176,7 +181,7 @@ const placeShip = (direction, ship, row, col, matrix) => {
       matrix[i][col] = {'ship': ship, 1: 1};
     }
   }
-  
+
 }
 
 // Random computer ship placing function
@@ -233,7 +238,6 @@ const placePlayerShips = () => {
     console.log(playerMatrix);
   })
 
-
 }
 
 placePlayerShips();
@@ -277,23 +281,43 @@ const computerStrike = (matrix) => {
   let i = randNum(matrix.length);
   let j = randNum(matrix[0].length);
 
+  let node = table1.rows[i].cells[j];
+
   if (matrix[i][j] === 0){
     matrix[i][j] = 3;
-    console.log('computer missed: ', i, j);
+    node.classList.add('miss');
+    // console.log('computer missed: ', i, j);
 
   } else if (matrix[i][j] === 3) {
-    console.log('already hit here: ', i, j);
     computerStrike(matrix);
+    // console.log('already hit here: ', i, j);
 
   } else if (matrix[i][j] && matrix[i][j][1] === 1) {
+
+    let shipName = matrix[i][j].ship;
     matrix[i][j][1] = 2;
-    console.log('hit: ', i, j);
+    node.classList.remove('placed');
+    node.classList.add('hit');
+    ships[shipName]['playerHits']--;
+    clearMessage();
+    displayMessage(messages.computerHit, true);
+
+    if (ships[shipName]['playerHits'] === 0) {
+      ships['activePlayerShips']--;
+      clearMessage();
+      displayMessage(messages.computerSink + shipName + '!', true);
+    }
+
+    if (ships['activePlayerShips'] === 0) {
+      clearMessage();
+      displayMessage(messages.loss, true);
+    } 
+
+    return;
 
   } else if (matrix[i][j] && matrix[i][j][1] === 2) {
     matrix[i][j][1] = 2;
-    console.log('already hit : ', i, j);
     computerStrike(matrix);
-
   } 
 
   console.log(matrix, i, j);
@@ -301,7 +325,7 @@ const computerStrike = (matrix) => {
 
 // Determine if strike is a hit, miss, or already hit
 const strike = (row, col, message, node) => {
-  // console.log(row, col, matrix)
+
   let misses = 0;
 
   if (matrix[row][col][1] === 1) {
@@ -309,16 +333,20 @@ const strike = (row, col, message, node) => {
     matrix[row][col] = 2;
     ships[shipName]['hits']--;
     node.classList.add('hit');
+    clearMessage();
+    displayMessage(messages.hit, true);
     computerStrike(playerMatrix);
 
     if (ships[shipName]['hits'] === 0) {
       ships['activeShips']--;
-      console.log(`You sank my ${shipName}`);
+      clearMessage();
+      displayMessage(messages.playerSink + shipName + '!', true);
     }
 
     if (ships['activeShips'] === 0) {
-      console.log('You win!');
-    }
+      clearMessage();
+      displayMessage(messages.win, true);
+    } 
     return;
   } 
 
@@ -330,9 +358,12 @@ const strike = (row, col, message, node) => {
     matrix[row][col] = 3;
     misses++;
     node.classList.add('miss');
+    clearMessage();
+    displayMessage(messages.miss, true);
     computerStrike(playerMatrix);
     return misses;
   }
+  console.log('computer: ', matrix);
 }
 
 // Capture coordinates on click
@@ -347,36 +378,9 @@ const chooseSquare = (table, message) => {
     row = Number(coordinates[0]);
     col = Number(coordinates[1]);
 
-    if (table === table2) {
-      strike(row, col, message, event.target);
-      // computerStrike(playerMatrix);   
-    } 
+    strike(row, col, message, event.target);  
 
   });
 }
 
 let strikeComputerBoard = chooseSquare(table2, messages);
-
-// displayMessage(messages.ship[0]);
-
-
-
-
-// let strikePlayerBoard = chooseSquare(table1);
-
-
-
-
-
-const changeMessage = (message) => {
-  const button = document.querySelector('.button');
-  const span = document.querySelector('.confirm');
-  const p = document.querySelector('.messages');
-
-  // button.addEventListener('click', event => {
-  //   clearMessage();
-  //   displayMessage(message.carrier, message.next);
-  // })
-}
-
-// changeMessage(messages);
