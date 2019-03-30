@@ -5,7 +5,7 @@
   "main": "game.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "babel": "babel --presets es2015 --watch play.js -o play.bundle.js"
+    "build": "babel . --presets es2015 --watch --out-dir compiled --ignore=node_modules,compiled"
   },
   "repository": {
     "type": "git",
