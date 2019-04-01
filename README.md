@@ -23,4 +23,4 @@ Submarine: 3 squares
 
 Destroyer: 2 squares
 
-Good luck and have fun!
+## Good luck and have fun!
