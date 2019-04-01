@@ -1,7 +1,7 @@
 # Battleship!
 Classic game of Battleship
 
-If you are concerned about ES6 compatability with your browser, npm install and then run babel. The script is in the package.json under babel.
+If you are concerned about ES6 compatability with your browser, npm install and then run build. The script is in the package.json under build.
 
 To begin playing, you can either:
 
