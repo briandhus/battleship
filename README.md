@@ -11,11 +11,16 @@ To begin playing:
 
 3.) Once the last ship is placed (the destroyer), you can click on Zone 2 to atack the computer's fleet of ships.
 
-** Ship Lengths 
+** Ship Lengths
+
 Carrier: 5 squares
+
 Battleship: 4 squares
+
 Cruiser: 3 squares
+
 Submarine: 3 squares
+
 Destroyer: 2 squares
 
 Good luck and have fun!
