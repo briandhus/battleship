@@ -3,7 +3,7 @@ Classic game of Battleship
 
 If you are concerned about ES6 compatability with your browser, npm install and then run build. The script is in the package.json under build.
 
-To begin playing:
+## To begin playing:
 
 1.) Choose from the selector whether to place your ship vertically or horizontally before you place each ship. First ship to place is the carrier. 
 
@@ -23,4 +23,4 @@ Submarine: 3 squares
 
 Destroyer: 2 squares
 
-## Good luck and have fun!
+### Good luck and have fun!
