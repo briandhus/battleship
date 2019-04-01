@@ -11,7 +11,7 @@ If you are concerned about ES6 compatability with your browser, npm install and 
 
 3.) Once the last ship is placed (the destroyer), you can click on Zone 2 to atack the computer's fleet of ships.
 
-** Ship Lengths
+## Ship Lengths
 
 Carrier: 5 squares
 
