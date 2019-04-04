@@ -19,6 +19,7 @@ label {
 }
 
 h1 {
+  font-family: 'Denk One', sans-serif;
   text-align: center;
   font-size: 60px;
   text-shadow: #f6f7fb 1px 0 10px;
@@ -56,6 +57,7 @@ table {
 }
 
 .messages {
+  font-family: 'Germania One', sans-serif;
   text-align: center;
   font-size: 30px;
 }
